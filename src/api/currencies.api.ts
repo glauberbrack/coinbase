@@ -1,10 +1,11 @@
-import {request} from './request';
 import {ResponseError} from '../utils/entities';
-import axios from 'axios';
+
+import {coinbaseRequest} from './coinbase.request';
+import {coingeckoRequest} from './coingecko.request';
 
 export const getCurrencies = async (): Promise<TCurrency[]> => {
   try {
-    const response = await request.get('/exchange-rates');
+    const response = await coinbaseRequest.get('/exchange-rates');
 
     const rates = response.data.data.rates;
 
@@ -15,8 +16,8 @@ export const getCurrencies = async (): Promise<TCurrency[]> => {
 
     // Fetch coin details from CoinGecko.
     // Coinbase doesn't provide coin images.
-    const coinGeckoResponse = await axios.get(
-      'https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd',
+    const coinGeckoResponse = await coingeckoRequest.get(
+      'coins/markets?vs_currency=usd',
     );
     const coinGeckoData = coinGeckoResponse.data;
 
