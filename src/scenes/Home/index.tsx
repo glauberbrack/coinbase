@@ -1,6 +1,6 @@
 import React, {useEffect, useState} from 'react';
 import {useDispatch, useSelector} from 'react-redux';
-import {Image, View, ScrollView, ActivityIndicator} from 'react-native';
+import {Image, View, ScrollView, ActivityIndicator, Alert} from 'react-native';
 import {Typography, Button} from '../../components/common';
 import {styles} from './styles';
 import {
@@ -17,7 +17,7 @@ const {COINBASE_WS} = getEnv();
 export const Home = () => {
   // @redux
   const dispatch = useDispatch<AppDispatch>();
-  const {currencies, loading} = useSelector(
+  const {currencies, loading, error} = useSelector(
     (state: RootState) => state.currency,
   );
 
@@ -66,6 +66,12 @@ export const Home = () => {
         dispatch(fetchCurrencies());
       };
 
+      ws.onerror = () => {
+        Alert.alert('Error', 'Failed to connect to WebSocket.');
+        setConnecting(false);
+        setConnected(false);
+      };
+
       setSocket(ws);
     } else {
       if (socket) {
@@ -86,6 +92,12 @@ export const Home = () => {
   useEffect(() => {
     dispatch(fetchCurrencies());
   }, [dispatch]);
+
+  useEffect(() => {
+    if (error) {
+      Alert.alert('Error', error);
+    }
+  }, [error]);
 
   return (
     <View style={styles.wrapper}>
@@ -110,30 +122,42 @@ export const Home = () => {
         {loading ? (
           <ActivityIndicator />
         ) : (
-          currencies
-            .filter(currency => USER_COINS.includes(currency.currency))
-            .map(item => (
-              <View
-                key={`currency-${item.currency}`}
-                style={styles.currencyItem}>
-                <View style={styles.currencyInfo}>
-                  {item.image && (
-                    <Image
-                      source={{
-                        uri: item.image,
-                      }}
-                      style={styles.currencyImage}
-                    />
-                  )}
-                  <Typography size="h4" bold>
-                    {item.currency}
-                  </Typography>
-                </View>
-                <Typography size="medium" bold>
-                  {item.value}
-                </Typography>
-              </View>
-            ))
+          <>
+            {currencies.length === 0 ? (
+              <Typography
+                size="h4"
+                variant="error"
+                textAlign="center"
+                marginTop="lg">
+                Nothing to show here, try again later
+              </Typography>
+            ) : (
+              currencies
+                .filter(currency => USER_COINS.includes(currency.currency))
+                .map(item => (
+                  <View
+                    key={`currency-${item.currency}`}
+                    style={styles.currencyItem}>
+                    <View style={styles.currencyInfo}>
+                      {item.image && (
+                        <Image
+                          source={{
+                            uri: item.image,
+                          }}
+                          style={styles.currencyImage}
+                        />
+                      )}
+                      <Typography size="h4" bold>
+                        {item.currency}
+                      </Typography>
+                    </View>
+                    <Typography size="medium" bold>
+                      {item.value}
+                    </Typography>
+                  </View>
+                ))
+            )}
+          </>
         )}
       </ScrollView>
       <View>
@@ -144,6 +168,7 @@ export const Home = () => {
           isLoading={connecting}
           variant={connected ? 'light' : 'default'}
           onPress={handleLiveMarket}
+          disabled={connecting || !!error}
         />
       </View>
     </View>

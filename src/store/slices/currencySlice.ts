@@ -16,6 +16,9 @@ const initialState: CurrencyState = {
 export const fetchCurrencies = createAsyncThunk(
   'currency/fetchCurrencies',
   async () => {
+    // Simulate an error
+    // throw new Error('Simulated fetch error');
+
     const response = await getCurrencies();
     return response;
   },
