@@ -1,42 +1,31 @@
 import React, {useEffect, useState} from 'react';
-
-import {getEnv} from '../../utils';
-
+import {useDispatch, useSelector} from 'react-redux';
 import {Image, View, ScrollView, ActivityIndicator} from 'react-native';
 import {Typography, Button} from '../../components/common';
 import {styles} from './styles';
-import {getCurrencies} from '../../api/currencies.api';
+import {
+  fetchCurrencies,
+  updateCurrencyValue,
+} from '../../store/slices/currencySlice';
+import {RootState, AppDispatch} from '../../store';
+import {getEnv} from '../../utils';
 
 const USER_COINS = ['BTC', 'ETH', 'LTC', 'BCH', 'XRP', 'ADA'];
+
 const {COINBASE_WS} = getEnv();
 
 export const Home = () => {
+  // @redux
+  const dispatch = useDispatch<AppDispatch>();
+  const {currencies, loading} = useSelector(
+    (state: RootState) => state.currency,
+  );
+
   // @states
-  const [loading, setLoading] = useState(false);
   const [connected, setConnected] = useState(false);
   const [connecting, setConnecting] = useState(false);
-
-  const [currencies, setCurrencies] = useState<TCurrency[]>([]);
   const [socket, setSocket] = useState<WebSocket | null>(null);
 
-  // @loaders
-  const onPageLoad = async () => {
-    try {
-      setLoading(true);
-      const response = await getCurrencies();
-      const filteredCurrencies = response.filter(currency =>
-        USER_COINS.includes(currency.currency),
-      );
-
-      setCurrencies(filteredCurrencies);
-    } catch (error) {
-      console.log(error);
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  // @handlers
   const handleLiveMarket = () => {
     if (!connected) {
       setConnecting(true);
@@ -49,14 +38,7 @@ export const Home = () => {
             channels: [
               {
                 name: 'ticker',
-                product_ids: [
-                  'BTC-USD',
-                  'ETH-USD',
-                  'LTC-USD',
-                  'BCH-USD',
-                  'XRP-USD',
-                  'ADA-USD',
-                ],
+                product_ids: USER_COINS.map(coin => `${coin}-USD`),
               },
             ],
           }),
@@ -68,12 +50,11 @@ export const Home = () => {
       ws.onmessage = e => {
         const data = JSON.parse(e.data);
         if (data.type === 'ticker') {
-          setCurrencies(prevCurrencies =>
-            prevCurrencies.map(currency =>
-              currency.currency === data.product_id.split('-')[0]
-                ? {...currency, value: parseFloat(data.price)}
-                : currency,
-            ),
+          dispatch(
+            updateCurrencyValue({
+              currency: data.product_id.split('-')[0],
+              value: parseFloat(data.price),
+            }),
           );
         }
       };
@@ -81,8 +62,8 @@ export const Home = () => {
       ws.onclose = () => {
         console.log('WebSocket disconnected');
         setConnected(false);
-        setConnecting(false); // Set loading state to false when connection is closed
-        onPageLoad(); // Reset to API data
+        setConnecting(false);
+        dispatch(fetchCurrencies());
       };
 
       setSocket(ws);
@@ -95,14 +76,16 @@ export const Home = () => {
 
   // @effects
   useEffect(() => {
-    onPageLoad();
-
     return () => {
       if (socket) {
         socket.close();
       }
     };
   }, [socket]);
+
+  useEffect(() => {
+    dispatch(fetchCurrencies());
+  }, [dispatch]);
 
   return (
     <View style={styles.wrapper}>
@@ -127,26 +110,30 @@ export const Home = () => {
         {loading ? (
           <ActivityIndicator />
         ) : (
-          currencies.map(item => (
-            <View key={`currency-${item.currency}`} style={styles.currencyItem}>
-              <View style={styles.currencyInfo}>
-                {item.image && (
-                  <Image
-                    source={{
-                      uri: item.image,
-                    }}
-                    style={styles.currencyImage}
-                  />
-                )}
-                <Typography size="h4" bold>
-                  {item.currency}
+          currencies
+            .filter(currency => USER_COINS.includes(currency.currency))
+            .map(item => (
+              <View
+                key={`currency-${item.currency}`}
+                style={styles.currencyItem}>
+                <View style={styles.currencyInfo}>
+                  {item.image && (
+                    <Image
+                      source={{
+                        uri: item.image,
+                      }}
+                      style={styles.currencyImage}
+                    />
+                  )}
+                  <Typography size="h4" bold>
+                    {item.currency}
+                  </Typography>
+                </View>
+                <Typography size="medium" bold>
+                  {item.value}
                 </Typography>
               </View>
-              <Typography size="medium" bold>
-                {item.value}
-              </Typography>
-            </View>
-          ))
+            ))
         )}
       </ScrollView>
       <View>
