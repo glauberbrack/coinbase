@@ -12,6 +12,8 @@
 		13B07FBC1A68108700A75B9A /* AppDelegate.mm in Sources */ = {isa = PBXBuildFile; fileRef = 13B07FB01A68108700A75B9A /* AppDelegate.mm */; };
 		13B07FBF1A68108700A75B9A /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 13B07FB51A68108700A75B9A /* Images.xcassets */; };
 		13B07FC11A68108700A75B9A /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 13B07FB71A68108700A75B9A /* main.m */; };
+		2583F6CB2C370158006DD160 /* HapticModule.h in Sources */ = {isa = PBXBuildFile; fileRef = 2583F6C92C36FDFC006DD160 /* HapticModule.h */; };
+		2583F6CC2C370158006DD160 /* HapticModule.m in Sources */ = {isa = PBXBuildFile; fileRef = 2583F6CA2C36FE5E006DD160 /* HapticModule.m */; };
 		6F2F0A73D85989C86D2D9FD8 /* PrivacyInfo.xcprivacy in Resources */ = {isa = PBXBuildFile; fileRef = 5047AAF20C62645924972E34 /* PrivacyInfo.xcprivacy */; };
 		7699B88040F8A987B510C191 /* libPods-coinbase-coinbaseTests.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 19F6CBCC0A4E27FBF8BF4A61 /* libPods-coinbase-coinbaseTests.a */; };
 		81AB9BB82411601600AC10FF /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 81AB9BB72411601600AC10FF /* LaunchScreen.storyboard */; };
@@ -39,8 +41,10 @@
 		13B07FB71A68108700A75B9A /* main.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = main.m; path = coinbase/main.m; sourceTree = "<group>"; };
 		13B07FB81A68108700A75B9A /* PrivacyInfo.xcprivacy */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = PrivacyInfo.xcprivacy; path = coinbase/PrivacyInfo.xcprivacy; sourceTree = "<group>"; };
 		19F6CBCC0A4E27FBF8BF4A61 /* libPods-coinbase-coinbaseTests.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-coinbase-coinbaseTests.a"; sourceTree = BUILT_PRODUCTS_DIR; };
+		2583F6C92C36FDFC006DD160 /* HapticModule.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = HapticModule.h; path = coinbase/HapticModule.h; sourceTree = "<group>"; };
+		2583F6CA2C36FE5E006DD160 /* HapticModule.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = HapticModule.m; path = coinbase/HapticModule.m; sourceTree = "<group>"; };
 		3B4392A12AC88292D35C810B /* Pods-coinbase.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-coinbase.debug.xcconfig"; path = "Target Support Files/Pods-coinbase/Pods-coinbase.debug.xcconfig"; sourceTree = "<group>"; };
-		5047AAF20C62645924972E34 /* PrivacyInfo.xcprivacy */ = {isa = PBXFileReference; includeInIndex = 1; name = PrivacyInfo.xcprivacy; path = coinbase/PrivacyInfo.xcprivacy; sourceTree = "<group>"; };
+		5047AAF20C62645924972E34 /* PrivacyInfo.xcprivacy */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xml; name = PrivacyInfo.xcprivacy; path = coinbase/PrivacyInfo.xcprivacy; sourceTree = "<group>"; };
 		5709B34CF0A7D63546082F79 /* Pods-coinbase.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-coinbase.release.xcconfig"; path = "Target Support Files/Pods-coinbase/Pods-coinbase.release.xcconfig"; sourceTree = "<group>"; };
 		5B7EB9410499542E8C5724F5 /* Pods-coinbase-coinbaseTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-coinbase-coinbaseTests.debug.xcconfig"; path = "Target Support Files/Pods-coinbase-coinbaseTests/Pods-coinbase-coinbaseTests.debug.xcconfig"; sourceTree = "<group>"; };
 		5DCACB8F33CDC322A6C60F78 /* libPods-coinbase.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-coinbase.a"; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -89,6 +93,7 @@
 		13B07FAE1A68108700A75B9A /* coinbase */ = {
 			isa = PBXGroup;
 			children = (
+				2583F6C82C36FDD1006DD160 /* NativeModules */,
 				13B07FAF1A68108700A75B9A /* AppDelegate.h */,
 				13B07FB01A68108700A75B9A /* AppDelegate.mm */,
 				13B07FB51A68108700A75B9A /* Images.xcassets */,
@@ -99,6 +104,15 @@
 				5047AAF20C62645924972E34 /* PrivacyInfo.xcprivacy */,
 			);
 			name = coinbase;
+			sourceTree = "<group>";
+		};
+		2583F6C82C36FDD1006DD160 /* NativeModules */ = {
+			isa = PBXGroup;
+			children = (
+				2583F6C92C36FDFC006DD160 /* HapticModule.h */,
+				2583F6CA2C36FE5E006DD160 /* HapticModule.m */,
+			);
+			name = NativeModules;
 			sourceTree = "<group>";
 		};
 		2D16E6871FA4F8E400B85C8A /* Frameworks */ = {
@@ -398,6 +412,8 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				2583F6CB2C370158006DD160 /* HapticModule.h in Sources */,
+				2583F6CC2C370158006DD160 /* HapticModule.m in Sources */,
 				13B07FBC1A68108700A75B9A /* AppDelegate.mm in Sources */,
 				13B07FC11A68108700A75B9A /* main.m in Sources */,
 			);

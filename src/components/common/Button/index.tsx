@@ -3,7 +3,9 @@ import {ActivityIndicator, TouchableOpacity} from 'react-native';
 
 import {defaultTheme} from '../../../theme';
 
+import {Haptic} from '../Haptic';
 import {Typography} from '../Typography';
+
 import {createStyles, Variants} from './styles';
 
 type Spacing = keyof typeof defaultTheme.spacing;
@@ -51,11 +53,16 @@ export const Button = ({
     disabled: disabled || isLoading,
   });
 
+  const handlePress = () => {
+    Haptic.triggerHaptic();
+    onPress();
+  };
+
   return (
     <TouchableOpacity
       style={styles.wrapper}
       disabled={disabled || isLoading}
-      onPress={onPress}
+      onPress={handlePress}
       {...rest}>
       {isLoading ? (
         <ActivityIndicator />
